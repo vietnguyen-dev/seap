@@ -1,23 +1,18 @@
-import bodyParser from "body-parser";
 import express from "express";
-import pg from "pg";
-
-// Connect to the database using the DATABASE_URL environment
-//   variable injected by Railway
-const pool = new pg.Pool();
+import * as dotenv from 'dotenv';
+import { getLeads, postLeads } from "../middleware/leads-middleware";
 
 const app = express();
-const port = process.env.PORT || 3333;
+const port = 3333;
+dotenv.config()
 
-app.use(bodyParser.json());
-app.use(bodyParser.raw({ type: "application/vnd.custom-type" }));
-app.use(bodyParser.text({ type: "text/html" }));
+app.get('/', (req: any, res: any) => {
+  res.send('<h1>HELLO USER</h1>')
+})
 
-app.get("/", async (req, res) => {
-  const { rows } = await pool.query("SELECT NOW()");
-  res.send(`Hello, World! The time from the DB is ${rows[0].now}`);
-});
+app.get("/leads", getLeads);
+app.post("/leads", postLeads)
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Example app listening at http://localhost:${process.env.SERVER_PORT}`);
 });
