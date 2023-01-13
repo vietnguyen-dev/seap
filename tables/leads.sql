@@ -9,3 +9,6 @@ CREATE TABLE leads (
     date_created DATE NOT NULL,
     date_deleted DATE NULL
 );
+
+INSERT INTO leads(full_name, phone_number, email, reason, time_frame, price, date_created) 
+VALUES ('John Nguyen', 9712223333, 'john.nguyen@gmail.com', 'need to fix my meth addiction', 'asap', 290000, NOW());

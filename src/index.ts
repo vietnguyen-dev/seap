@@ -1,10 +1,12 @@
 import express from "express";
 import * as dotenv from 'dotenv';
-import { getLeads, postLeads } from "../middleware/leads-middleware";
+import { getLeads, postLeads, putLeads, deleteLeads } from "../middleware/leads-middleware";
 
 const app = express();
-const port = 3333;
+const port = process.env.PORT;
 dotenv.config()
+
+app.use(express.json());
 
 app.get('/', (req: any, res: any) => {
   res.send('<h1>HELLO USER</h1>')
@@ -12,7 +14,9 @@ app.get('/', (req: any, res: any) => {
 
 app.get("/leads", getLeads);
 app.post("/leads", postLeads)
+app.put("/leads", putLeads);
+app.delete("/leads", deleteLeads)
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${process.env.SERVER_PORT}`);
+  console.log(`Leadpie app listening at http://localhost:${process.env.PORT}`);
 });
