@@ -1,12 +1,20 @@
 interface ileads {
-    fullName: string,
-    phoneNumber: number,
+    id: string,
+    address_1: string,
+    address_2: string,
+    city: string,
+    us_state: string,
+    zip_code: string,
+    address_full: string,
+    full_name: string,
+    phone_number: number,
     email: string,
     reason: string,
-    timeFrame: string,
+    time_frame: string,
     price: number,
-    dateCreated: Date,
-    dateDeleted: Date
+    date_created: Date,
+    date_updated: Date,
+    date_deleted: Date
 }
 
 export default ileads;

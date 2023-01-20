@@ -1,8 +1,11 @@
 import express from "express";
 import * as dotenv from 'dotenv';
 
-import { getLeads, postLeads, putLeads, deleteLeads } from "../middleware/leads-middleware";
-import { sendEmailToBuyer, sendEmailToSeller } from "../middleware/email-middleware";
+import { getLeads, postLeads, preventExistingLead, putLeads, deleteSingleLead, deleteMultipleLeads } from "../middleware/data/leads";
+import { sendEmailToBuyer, sendEmailToSeller } from "../middleware/services/email";
+import { postUsers } from "../middleware/data/users";
+import { postUserKey } from "../middleware/data/user-key";
+import { authorizeKey, authorizeAdminKey } from "../middleware/auth/keys";
 
 const app = express();
 const port = process.env.PORT;
@@ -10,14 +13,24 @@ dotenv.config()
 
 app.use(express.json());
 
-app.get("/", getLeads);
-app.post("/", postLeads)
-app.put("/", putLeads);
-app.delete("/", deleteLeads)
+//leads
+app.get("/", authorizeKey, getLeads);
+app.post("/", authorizeKey, preventExistingLead, postLeads)
+app.put("/", authorizeKey, putLeads);
+app.delete("/:id", authorizeKey, deleteSingleLead)
+app.delete("/", authorizeKey, deleteMultipleLeads)
 
-app.get("/email-seller", sendEmailToSeller)
-app.put('/email-buyer', sendEmailToBuyer)
+
+//email
+app.get("/email-seller", authorizeKey, sendEmailToSeller)
+app.put('/email-buyer', authorizeKey, sendEmailToBuyer)
+
+
+//users - for dev use only
+// no other routes because other routes should only be done in sql
+app.post('/user', authorizeAdminKey, postUsers);
+app.post('/user/key', authorizeAdminKey, postUserKey)
 
 app.listen(port, () => {
-  console.log(`LEAP listening at http://localhost:${process.env.PORT}`);
+  console.log(`LEAP listening at http://localhost:${port}`);
 });
