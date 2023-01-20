@@ -7,11 +7,16 @@ import { postUsers } from "../middleware/data/users";
 import { postUserKey } from "../middleware/data/user-key";
 import { authorizeKey, authorizeAdminKey } from "../middleware/auth/keys";
 
+import { Request, Response, NextFunction } from 'express';
+
 const app = express();
 const port = process.env.PORT;
 dotenv.config()
 
 app.use(express.json());
+
+//use app.all to add authorize key to all routes once it is done
+// app.all('*', requireAuthentication)
 
 //leads
 app.get("/", authorizeKey, getLeads);
@@ -34,3 +39,6 @@ app.post('/user/key', authorizeAdminKey, postUserKey)
 app.listen(port, () => {
   console.log(`LEAP listening at http://localhost:${port}`);
 });
+
+
+export default app;

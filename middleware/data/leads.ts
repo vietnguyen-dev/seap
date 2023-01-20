@@ -22,7 +22,7 @@ const test = {
 export const getLeads = async (req: Request, res: Response) => {
     try {
         const { rows } = await pool.query("SELECT * FROM vw_leads ORDER BY id ASC LIMIT 10;");
-        res.send(rows);
+        res.status(200).send(rows);
     }
     catch (err) {
         console.error(err, 'from getLeads')
@@ -41,7 +41,7 @@ export const postLeads = async (req: Request, res: Response) => {
                 ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW()) 
             RETURNING *`;
         const newLeads = await pool.query(query, valuesArr);
-        res.send(newLeads.rows);
+        res.status(201).send(newLeads.rows);
     }
     catch (err) {
         console.error(err, 'from postLeads')
@@ -92,7 +92,7 @@ export const putLeads = async (req: Request, res: Response) => {
             RETURNING *`
         await pool.query(query, valuesArr);
         const { rows } = await pool.query("SELECT * FROM leads ORDER BY id ASC;");
-        res.send(rows);
+        res.status(200).send(rows);
     }
     catch (err) {
 
@@ -112,7 +112,7 @@ export const deleteSingleLead = async (req: Request, res: Response)=> {
                 id = $1 
             RETURNING *`
         const deletedLead = await pool.query(query, [ id ]);
-        res.json(deletedLead.rows);
+        res.status(200).json(deletedLead.rows);
     }
     catch (err) {
         console.error(err, 'from deleteLeads')
@@ -140,7 +140,7 @@ export const deleteMultipleLeads = async (req: Request, res: Response)=> {
         query += ');'
         console.log(query)
         const deletedLead = await pool.query(query, idArr);
-        res.json(deletedLead.rows);
+        res.status(200).json(deletedLead.rows);
     }
     catch (err) {
         console.error(err, 'from deleteLeads')
