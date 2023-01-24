@@ -22,6 +22,8 @@ const example2 = {
     "dateCreated": "10/12/2022"
 }
 
+//commend to test
+
 export const postUsers= async (req: Request, res: Response) => { 
     try {
         const { firstName, lastName, userName, email, password, roleId, dateCreated } = req.body;
