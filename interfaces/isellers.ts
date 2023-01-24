@@ -1,4 +1,4 @@
-interface ileads {
+interface isellers {
     id: string,
     address_1: string,
     address_2: string,
@@ -17,4 +17,4 @@ interface ileads {
     date_deleted: Date
 }
 
-export default ileads;
+export default isellers;

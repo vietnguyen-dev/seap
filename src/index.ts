@@ -1,7 +1,7 @@
 import express from "express";
 import * as dotenv from 'dotenv';
 
-import { getLeads, postLeads, preventExistingLead, putLeads, deleteSingleLead, deleteMultipleLeads } from "../middleware/data/leads";
+import { getSellers, postSeller, putSeller, deleteSingleSeller, deleteMultiplesellers } from "../middleware/data/sellers";
 import { sendEmailToBuyer, sendEmailToSeller } from "../middleware/services/email";
 import { postUsers } from "../middleware/data/users";
 import { postUserKey } from "../middleware/data/user-key";
@@ -19,25 +19,25 @@ app.use(express.json());
 // app.all('*', requireAuthentication)
 
 //leads
-app.get("/", authorizeKey, getLeads);
-app.post("/", authorizeKey, preventExistingLead, postLeads)
-app.put("/", authorizeKey, putLeads);
-app.delete("/:id", authorizeKey, deleteSingleLead)
-app.delete("/", authorizeKey, deleteMultipleLeads)
+app.get("/", getSellers);
+app.post("/", postSeller)
+app.put("/",  putSeller);
+app.delete("/:id", deleteSingleSeller)
+app.delete("/", deleteMultiplesellers)
 
 
 //email
-app.get("/email-seller", authorizeKey, sendEmailToSeller)
-app.put('/email-buyer', authorizeKey, sendEmailToBuyer)
+app.get("/email-seller", sendEmailToSeller)
+app.put('/email-buyer', sendEmailToBuyer)
 
 
 //users - for dev use only
 // no other routes because other routes should only be done in sql
-app.post('/user', authorizeAdminKey, postUsers);
-app.post('/user/key', authorizeAdminKey, postUserKey)
+app.post('/developer', postUsers);
+app.post('/developer/key', postUserKey)
 
 app.listen(port, () => {
-  console.log(`LEAP listening at http://localhost:${port}`);
+  console.log(`MOAP listening at http://localhost:${port}`);
 });
 
 

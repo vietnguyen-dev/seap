@@ -1,7 +1,7 @@
 import pool from "../../connect"
 import { Request, Response, NextFunction } from 'express';
 
-import ileads from "../../interfaces/ileads";
+import isellers from "../../interfaces/isellers";
 
 const test = { 
     "address1": "9999 NE 40th place",
@@ -19,40 +19,40 @@ const test = {
 }
 
 
-export const getLeads = async (req: Request, res: Response) => {
+export const getSellers = async (req: Request, res: Response) => {
     try {
-        const { rows } = await pool.query("SELECT * FROM vw_leads ORDER BY id ASC LIMIT 10;");
+        const { rows } = await pool.query("SELECT * FROM vw_sellers ORDER BY id ASC LIMIT 50;");
         res.status(200).send(rows);
     }
     catch (err) {
-        console.error(err, 'from getLeads')
+        console.error(err, 'from getsellers')
         res.sendStatus(500);
     }
 }
 
-export const postLeads = async (req: Request, res: Response) => {
+export const postSeller = async (req: Request, res: Response) => {
     try {
         const { address1, address2, city, state, zip, addressFull, fullName, phoneNumber, email, reason, timeFrame, price } = req.body;
         const valuesArr = [ address1, address2, city, state, zip, addressFull, fullName, phoneNumber, email, reason, timeFrame, price ]
         const query = 
-            `INSERT INTO leads 
+            `INSERT INTO sellers 
                 (address_1, address_2, city, us_state, zip_code, address_full, full_name, phone_number, email, reason, time_frame, price, date_created)
             VALUES 
                 ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW()) 
             RETURNING *`;
-        const newLeads = await pool.query(query, valuesArr);
-        res.status(201).send(newLeads.rows);
+        const newsellers = await pool.query(query, valuesArr);
+        res.status(201).send(newsellers.rows);
     }
     catch (err) {
-        console.error(err, 'from postLeads')
-        res.sendStatus(500);
+        console.error(err, 'from postsellers')
+        res.status(400);
     }
 }
 
-export const preventExistingLead = async (req: Request, res: Response, next: NextFunction) => {
+export const preventExistingSeller = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { addressFull } = req.body;
-        const query = 'SELECT * FROM vw_leads WHERE address_full = $1 ORDER BY id ASC;'
+        const query = 'SELECT * FROM vw_sellers WHERE address_full = $1 ORDER BY id ASC;'
         const { rows } = await pool.query(query, [ addressFull])
         if (rows.length === 0) {
             next()
@@ -63,17 +63,17 @@ export const preventExistingLead = async (req: Request, res: Response, next: Nex
 
     }
     catch (err) {
-        console.error(err, 'from preventExistingLead')
+        console.error(err, 'from preventExistingseller')
         res.sendStatus(500);
     }
 }
 
-export const putLeads = async (req: Request, res: Response) => {
+export const putSeller = async (req: Request, res: Response) => {
     try {
         const { id, address1, address2, city, state, zip, addressFull, fullName, phoneNumber, email, reason, timeFrame, price } = req.body;
         const valuesArr = [ id, address1, address2, city, state, zip, addressFull, fullName, phoneNumber, email, reason, timeFrame, price ]
         const query = 
-            `UPDATE leads 
+            `UPDATE sellers 
             SET 
                 address_1 = $2, 
                 address_2 = $3,
@@ -91,43 +91,65 @@ export const putLeads = async (req: Request, res: Response) => {
             WHERE id = $1 
             RETURNING *`
         await pool.query(query, valuesArr);
-        const { rows } = await pool.query("SELECT * FROM leads ORDER BY id ASC;");
+        const { rows } = await pool.query("SELECT * FROM sellers ORDER BY id ASC LIMIT 50;");
         res.status(200).send(rows);
     }
     catch (err) {
 
-        console.error(err, req.body, 'from putLeads')
+        console.error(err, req.body, 'from putsellers')
         res.sendStatus(500);
     }
 }
 
-export const deleteSingleLead = async (req: Request, res: Response)=> {
+export const deleteSingleSeller = async (req: Request, res: Response)=> {
     try {
         const { id } = req.params;
         const query = 
-            `UPDATE leads
+            `UPDATE sellers
             SET 
                 date_deleted = NOW() 
             WHERE 
                 id = $1 
             RETURNING *`
-        const deletedLead = await pool.query(query, [ id ]);
-        res.status(200).json(deletedLead.rows);
+        const deletedseller = await pool.query(query, [ id ]);
+        res.status(200).json(deletedseller.rows);
     }
     catch (err) {
-        console.error(err, 'from deleteLeads')
+        console.error(err, 'from deletesellers')
         res.sendStatus(500);
     }
 }
 
 
-export const deleteMultipleLeads = async (req: Request, res: Response)=> {
+const example = { 
+    "deleted": [
+        {
+            "id": "3",
+            "address_1": "17264 DE demn you",
+            "address_2": null,
+            "city": "Portland",
+            "us_state": "OR",
+            "zip_code": 24323,
+            "address_full": "17264 DE demn you Portland OR 24323",
+            "full_name": "Jaerry Larson",
+            "phone_number": "(971) 998-2695",
+            "email": "poop@gmail.com",
+            "reason": "house burned down",
+            "time_frame": "asap",
+            "price": null,
+            "date_created": "2023-01-15T00:00:00.000Z",
+            "date_updated": null,
+            "date_deleted": null
+        }
+   ]
+ }
+
+export const deleteMultiplesellers = async (req: Request, res: Response)=> {
     try {
-        //deleted should be array of all leads to be sold / deleted
+        //deleted should be array of all sellers to be sold / deleted
         const { deleted } = req.body;
-        const idArr = deleted.map((lead: ileads) => lead.id)
-        console.log(idArr)
-        let query = 'UPDATE leads SET date_deleted = NOW() WHERE id IN ('
+        const idArr = deleted.map((seller: isellers) => seller.id)
+        let query = 'UPDATE sellers SET date_deleted = NOW() WHERE id IN ('
         for (let i = 0; i < idArr.length; i++) {
             if (i < idArr.length - 1) {
                 query += `$${i + 1},`
@@ -139,11 +161,11 @@ export const deleteMultipleLeads = async (req: Request, res: Response)=> {
         }
         query += ');'
         console.log(query)
-        const deletedLead = await pool.query(query, idArr);
-        res.status(200).json(deletedLead.rows);
+        const deletedseller = await pool.query(query, idArr);
+        res.status(200).json(deletedseller.rows);
     }
     catch (err) {
-        console.error(err, 'from deleteLeads')
+        console.error(err, 'from deletesellers')
         res.sendStatus(500);
     }
 }
