@@ -38,7 +38,7 @@ app.post('/developer', postUsers);
 app.post('/developer/key', postUserKey)
 
 app.listen(port, () => {
-  console.log(`MOAP listening at http://localhost:${port}`);
+  console.log(`SEAP listening at http://localhost:${port}`);
 });
 
 
