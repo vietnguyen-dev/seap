@@ -2,14 +2,14 @@ import pool from '../../connect';
 import bcrypt from "bcrypt";
 import { Request, Response, NextFunction } from 'express';
 
-export const authorizeKey = async (req: Request, res:Response, next: NextFunction) => {
+export const authorizeExternalKey = async (req: Request, res:Response, next: NextFunction) => {
     try {
         const key = req.header('x-api-key')
         const email = req.header('email')
         const query = 
             `SELECT 
                 *
-            FROM vw_auth_key
+            FROM vw_auth
             WHERE 
                 email_address = $1 
             ORDER BY 

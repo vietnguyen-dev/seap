@@ -32,6 +32,11 @@ export const getSellers = async (req: Request, res: Response) => {
 
 export const postSeller = async (req: Request, res: Response) => {
     try {
+        for (const prop in req.body) {
+            if (!req.body[prop]) {
+                res.status(400)
+            }
+          } 
         const { address1, address2, city, state, zip, addressFull, fullName, phoneNumber, email, reason, timeFrame, price } = req.body;
         const valuesArr = [ address1, address2, city, state, zip, addressFull, fullName, phoneNumber, email, reason, timeFrame, price ]
         const query = 
@@ -70,6 +75,11 @@ export const preventExistingSeller = async (req: Request, res: Response, next: N
 
 export const putSeller = async (req: Request, res: Response) => {
     try {
+        for (const prop in req.body) {
+            if (!req.body[prop]) {
+                res.status(400)
+            }
+          } 
         const { id, address1, address2, city, state, zip, addressFull, fullName, phoneNumber, email, reason, timeFrame, price } = req.body;
         const valuesArr = [ id, address1, address2, city, state, zip, addressFull, fullName, phoneNumber, email, reason, timeFrame, price ]
         const query = 

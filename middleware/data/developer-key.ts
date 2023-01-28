@@ -6,29 +6,29 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export const postUserKey = async (req: Request, res: Response) => { 
+export const postDeveloperKey = async (req: Request, res: Response) => { 
     try {
-        const devId = req.query.userId
+        const devId = req.query.DeveloperId
         const newKey = uuid()
         console.log(newKey);
         const saltRounds = parseInt(process.env.SALT!);
         bcrypt.genSalt(saltRounds, (err, salt) => {
             if (err) {
-                console.error(err, 'trouble genSalt from postUserKey')
+                console.error(err, 'trouble genSalt from postDeveloperKey')
             }
             bcrypt.hash(newKey, salt, (err, hash) => {
                 // Store hash in your password DB.
                 if (err) {
-                    console.error(err, 'trouble hash from postUserKey')
+                    console.error(err, 'trouble hash from postDeveloperKey')
                 }
                 const query = 
                     `INSERT INTO api_keys 
-                        (api_key, user_id) 
+                        (api_key, Developer_id) 
                     VALUES 
                         ($1, $2);`
                 pool.query(query, [hash, devId], (err, result) => {
                     if(err) {
-                        console.error(err, 'bad query from postUserKey')
+                        console.error(err, 'bad query from postDeveloperKey')
                     }
                     else {
                         res.send(result.rows)
@@ -39,6 +39,6 @@ export const postUserKey = async (req: Request, res: Response) => {
 
     }
     catch (err) {
-        console.error(err, 'from postUserKey')
+        console.error(err, 'from postDeveloperKey')
     }
 }
