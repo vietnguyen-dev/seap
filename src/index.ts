@@ -113,5 +113,3 @@ app.get('/email-contact', authSusenKey, sendEmailToContact)
 app.listen(port, () => {
   console.log(`SEAP listening at http://localhost:${port}`);
 });
-
-// redeploy
