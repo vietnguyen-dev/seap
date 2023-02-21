@@ -4,7 +4,7 @@ import connectRedis from 'connect-redis';
 import * as dotenv from 'dotenv';
 
 //authorization
-// import { authorizeKey, authorizeAdminKey } from "../middleware/auth/keys";
+import { authSusenKey, authAdminKey,hasApiKey } from "../middleware/auth/keys";
 import { userCredentials, userExists, correctPasswordForUser, userLogin, userLogout, checkSession } from "../middleware/auth/user-login";
 
 //data from postgres
@@ -13,7 +13,6 @@ import { postDeveloper } from "../middleware/data/developer";
 import { postDeveloperKey } from "../middleware/data/developer-key";
 import { getUsers, getSingleUser, postUser, preventExistingUser, putUser, deleteUser } from "../middleware/data/users";
 import { getContacts, getContactsForUser, postContact, preventExistingContact, putContact, deleteContact } from "../middleware/data/contacts";
-import { authSusenKey, authAdminKey } from "../middleware/auth/keys";
 
 //external services
 import { sendEmailToSeller, sendEmailToContact } from "../middleware/services/email";
@@ -27,7 +26,6 @@ const port = process.env.PORT;
 dotenv.config()
 
 const environment = process.env.NODE_ENV === 'production'
-
 
 app.disable('etag');
 app.use(express.json());
@@ -49,8 +47,9 @@ app.use(session({
 redisClient.on('connect', () => console.log('Redis Client: Connected!'));
 redisClient.on('error', err => console.log('Redis Client: Error', err));
 console.log('Environment', environment)
-console.log('Maybe Error')
 //Auth middleware, if the route doesnt have a session id, send an error
+
+// app.use(hasApiKey)
 app.use(checkSession);
 
 //AUTHORIZATION ROUTES

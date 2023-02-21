@@ -5,6 +5,16 @@ import { Request, Response, NextFunction } from 'express';
 //different routes will need different api keys
 //each of these middleware will be used depending on which application they come from
 
+export const hasApiKey = async (req: Request, res:Response, next: NextFunction) => { 
+    const key = req.header('x-api-key')
+    if (key) {
+        next()
+    }
+    else {
+        res.status(400).json({ message: 'Invalid Request, no Key'})
+    }
+}
+
 export const authSusenKey = async (req: Request, res:Response, next: NextFunction) => { 
     try {
         const key = req.header('x-api-key')

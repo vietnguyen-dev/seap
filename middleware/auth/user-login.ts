@@ -95,6 +95,7 @@ export const userLogin: RequestHandler = async (req: CustomRequest, res:Response
 export const userLogout: RequestHandler = async (req: CustomRequest, res:Response, next: NextFunction) => {
     req.session.destroy(() => {
         console.log('session destroyed')
+        console.log(req.session)
         // redirect to login page once created app
         // res.redirect('/')
     })
@@ -108,6 +109,7 @@ export const keepUserLoggedIn: RequestHandler = async (req: CustomRequest, res:R
 
 //middleware for all requests to check if the user has a session id
 export const checkSession: RequestHandler = async (req: Request, res:Response, next: NextFunction) => {
+    console.log(req.session)
     const loginPaths = [ '/user-login', '/user-logout' ] 
     const isLoginPath = loginPaths.includes(req.url)
     if (isLoginPath) {
