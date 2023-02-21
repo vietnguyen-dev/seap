@@ -4,13 +4,6 @@ import { Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const ex = {
-    "address": "30 143rd street portland or",
-    "firstName": "Jenny",
-    "email": "vietnguyent22@gmail.com",
-    "domain": "propertybuyersgalore.com"
-}
-
 export const sendEmailToSeller = async (req: Request, res: Response) => { 
     try {
         const { address, firstName, email, domain } = req.body;

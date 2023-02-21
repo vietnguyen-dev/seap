@@ -28,8 +28,9 @@ yarn-error.log*
 .env.production.local
 middleware/.env
 
+#example-data
+example-data.ts
 
 # out dir
 dist/
 
-example-data.ts

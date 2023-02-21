@@ -1,4 +1,4 @@
-import pool from '../util/connect-pg';
+import pool from "../util/connect-pg";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from 'uuid';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
@@ -6,7 +6,7 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 
 import ideveloper from '../../interfaces/ideveloper';
 
-import { ifEmpty } from '../util/empty';
+import { ifEmpty } from '../util/empty'
 
 //when a user logs in they go through several middlewares in this order
 
