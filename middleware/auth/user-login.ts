@@ -57,6 +57,7 @@ export const userExists: RequestHandler = async (req: CustomRequest, res:Respons
             if (result.rows.length > 0 && result.rows.length === 1) {
                 //this will pass down the results to the correctPasswordForUser middleware
                 req.requestingUser =  result.rows[0]
+                console.log(req.requestingUser);
                 next()
             }
             else {
