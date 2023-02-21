@@ -28,6 +28,7 @@ dotenv.config()
 
 const environment = process.env.NODE_ENV === 'production'
 
+
 app.disable('etag');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
@@ -47,7 +48,8 @@ app.use(session({
 
 redisClient.on('connect', () => console.log('Redis Client: Connected!'));
 redisClient.on('error', err => console.log('Redis Client: Error', err));
-
+console.log('Environment', environment)
+console.log('Maybe Error')
 //Auth middleware, if the route doesnt have a session id, send an error
 app.use(checkSession);
 
