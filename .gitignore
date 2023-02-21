@@ -32,3 +32,4 @@ middleware/.env
 # out dir
 dist/
 
+example-data.ts

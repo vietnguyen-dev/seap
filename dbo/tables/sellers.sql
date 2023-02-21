@@ -1,4 +1,4 @@
-CREATE TABLE motivated_sellers (
+CREATE TABLE sellers (
     id BIGSERIAL PRIMARY KEY,
     address_1 VARCHAR(64) NOT NULL,
     address_2 VARCHAR(64) NULL,

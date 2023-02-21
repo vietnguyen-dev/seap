@@ -12,4 +12,12 @@ const pool = new pg.Pool({
   port: parseInt(process.env.DATABASE_PORT!),
 });
 
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err)
+  process.exit(-1)
+})
+
+//all BIGSERIAL data was strings, this turns it into integers
+pg.defaults.parseInt8 = true
+
 export default pool;

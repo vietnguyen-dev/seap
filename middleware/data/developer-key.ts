@@ -1,14 +1,14 @@
-import pool from "../../connect";
+import pool from "../util/connect-pg";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from 'uuid';
-import { Request, Response } from 'express';
+import { Request, Response, RequestHandler } from 'express';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export const postDeveloperKey = async (req: Request, res: Response) => { 
+export const postDeveloperKey: RequestHandler = async (req: Request, res: Response) => { 
     try {
-        const devId = req.query.DeveloperId
+        const devId = req.params.id
         const newKey = uuid()
         console.log(newKey);
         const saltRounds = parseInt(process.env.SALT!);
@@ -31,7 +31,7 @@ export const postDeveloperKey = async (req: Request, res: Response) => {
                         console.error(err, 'bad query from postDeveloperKey')
                     }
                     else {
-                        res.send(result.rows)
+                        res.send({ key: newKey })
                     }
                 })
             });

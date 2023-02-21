@@ -1,82 +1,40 @@
-import pool from '../../connect';
+import pool from "../util/connect-pg";
 import bcrypt from "bcrypt";
 import { Request, Response, NextFunction } from 'express';
 
-export const authorizeExternalKey = async (req: Request, res:Response, next: NextFunction) => {
+//different routes will need different api keys
+//each of these middleware will be used depending on which application they come from
+
+export const authSusenKey = async (req: Request, res:Response, next: NextFunction) => { 
     try {
         const key = req.header('x-api-key')
-        const email = req.header('email')
-        const query = 
-            `SELECT 
-                *
-            FROM vw_auth
-            WHERE 
-                email_address = $1 
-            ORDER BY 
-                dev_id ASC`;
-        pool.query(query, [ email ], async (err, results) => {
-            if(err) {
-                res.send('403 Not Allowed: bad database connection')
-            }
-            else {
-                const rows = results.rows;           
-                if (rows.length > 0) {
-                    for (let i = 0; i < rows.length;  i++) {
-                        const match = await bcrypt.compare(key as string, rows[i].api_key)
-                        if (!!match) {
-                            next()
-                        }
-                    }
-                }
-                else {
-                    res.send('403 Not Allowed: Missing Credentials');
-                }
-            }
-        })
+        const query = `SELECT * FROM vw_auth WHERE role_id = 4 LIMIT 1;`;
+        const { rows } = await pool.query(query)
+        const match = await bcrypt.compare(key!, rows[0].api_key)
+        if (match) {
+            next()
+        }
+        else {
+            res.status(400).send({ message: 'Key not authorized for SUSEN' })
+        }
     }
     catch (err) {
-        console.error(err, 'from authorizeKey')
-        res.sendStatus(500).send('key is not valid');
+        console.error(err)
     }
 }
 
-export const authorizeAdminKey = async (req: Request, res:Response, next: NextFunction) => { 
+export const authAdminKey = async (req: Request, res:Response, next: NextFunction) => { 
     try {
         const key = req.header('x-api-key')
-        const email = req.header('email')
-        const query = 
-            `SELECT 
-                *
-            FROM vw_auth_key
-            WHERE 
-                email_address = $1 
-            AND 
-                role_id = $2
-            ORDER BY 
-                dev_id ASC`;
-        pool.query(query, [ email, 1], async (err, results) => {
-            if(err) {
-                res.send('403 Not Allowed: bad database connection')
-            }
-            else {
-                const rows = results.rows;
-                console.log(rows)
-                if (rows.length === 0) {
-                    res.send('403 Not Allowed: no records')
-                }
-                else if (rows.length > 0) {
-                    for (let i = 0; i < rows.length;  i++) {
-                        const match = await bcrypt.compare(key as string, rows[i].api_key)
-                        if (!!match) {
-                            next()
-                        }
-                    }
-                }
-                else {
-                    res.send('403 Not Allowed: no email matching key')
-                }
-            }
-        })
+        const query = `SELECT * FROM vw_auth role_id = 5 LIMIT 1;`;        
+        const { rows } = await pool.query(query)
+        const match = await bcrypt.compare(key!, rows[0].api_key)
+        if (match) {
+            next()
+        }
+        else {
+            res.status(400).send({ message: 'Key not authorized for SEAD' })
+        }
     }
     catch (err) {
         console.error(err, 'from authorizeAdminKey')
