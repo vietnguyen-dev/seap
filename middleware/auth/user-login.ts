@@ -120,6 +120,7 @@ export const checkSession: RequestHandler = async (req: Request, res:Response, n
             next()
         }
         else {
+            console.log(req.session)
             res.status(400).json({ message: 'not in a session, action not permiteed'})
         }
     }
